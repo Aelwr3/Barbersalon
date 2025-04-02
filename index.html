@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - صالون الحلاقة</title>
+    <title>نظام إدارة الصالون</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -40,7 +40,13 @@
             padding: 2rem;
         }
 
-        .login-card {
+        .logo {
+            width: 150px;
+            margin: 0 auto;
+            filter: drop-shadow(0 0 10px rgba(255, 163, 67, 0.5));
+        }
+
+        .auth-card {
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 15px;
@@ -50,18 +56,14 @@
             text-align: center;
         }
 
-        .logo {
-            width: 120px;
-            margin: 0 auto;
-        }
-
-        .pin-input {
+        .pin-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 0.5rem;
+            margin: 1rem 0;
         }
 
-        .pin-digit {
+        .pin-input {
             width: 100%;
             padding: 1rem;
             background: transparent;
@@ -84,76 +86,104 @@
         }
 
         .btn:hover {
-            opacity: 0.9;
             transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            place-items: center;
+            z-index: 1000;
+        }
+
+        .change-pin-modal {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
         }
 
         .message {
             padding: 1rem;
             border-radius: 8px;
+            margin: 1rem 0;
             display: none;
         }
 
-        .error {
-            background: var(--error-color);
-            display: block;
-        }
-
-        .success {
-            background: var(--success-color);
-            display: block;
-        }
-
-        .settings-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 1rem;
-            }
-            
-            .pin-digit {
-                padding: 0.8rem;
-                font-size: 1rem;
-            }
-        }
+        .success { background: var(--success-color); display: block; }
+        .error { background: var(--error-color); display: block; }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="login-card">
-            <img src="logo.png" alt="Logo" class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/10033/10033281.png" class="logo" alt="صالون الحلاقة">
+        
+        <div class="auth-card">
             <h2>تسجيل دخول المشرف</h2>
             
-            <div class="pin-input" id="pinContainer">
-                <input type="password" class="pin-digit" maxlength="1" data-index="0">
-                <input type="password" class="pin-digit" maxlength="1" data-index="1">
-                <input type="password" class="pin-digit" maxlength="1" data-index="2">
-                <input type="password" class="pin-digit" maxlength="1" data-index="3">
-                <input type="password" class="pin-digit" maxlength="1" data-index="4">
-                <input type="password" class="pin-digit" maxlength="1" data-index="5">
+            <div class="pin-grid">
+                <input type="password" class="pin-input" maxlength="1" data-index="0">
+                <input type="password" class="pin-input" maxlength="1" data-index="1">
+                <input type="password" class="pin-input" maxlength="1" data-index="2">
+                <input type="password" class="pin-input" maxlength="1" data-index="3">
+                <input type="password" class="pin-input" maxlength="1" data-index="4">
+                <input type="password" class="pin-input" maxlength="1" data-index="5">
             </div>
 
             <div class="message" id="message"></div>
             
-            <button class="btn" onclick="checkPin()">دخول</button>
-            <a class="settings-link" onclick="showSettings()">تغيير كود الدخول</a>
+            <button class="btn" onclick="handleLogin()">دخول</button>
+            <button class="btn" onclick="showChangePinModal()" style="margin-top: 1rem;">تغيير الكود</button>
+        </div>
+    </div>
+
+    <!-- مودال تغيير الكود -->
+    <div class="modal-overlay" id="changePinModal">
+        <div class="change-pin-modal">
+            <h2>تغيير كود الدخول</h2>
+            
+            <div class="pin-grid">
+                <input type="password" class="pin-input" id="currentPin0" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin1" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin2" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin3" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin4" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin5" maxlength="1">
+            </div>
+            <small>الكود الحالي</small>
+
+            <div class="pin-grid" style="margin-top: 1rem;">
+                <input type="password" class="pin-input" id="newPin0" maxlength="1">
+                <input type="password" class="pin-input" id="newPin1" maxlength="1">
+                <input type="password" class="pin-input" id="newPin2" maxlength="1">
+                <input type="password" class="pin-input" id="newPin3" maxlength="1">
+                <input type="password" class="pin-input" id="newPin4" maxlength="1">
+                <input type="password" class="pin-input" id="newPin5" maxlength="1">
+            </div>
+            <small>الكود الجديد</small>
+
+            <div class="message" id="modalMessage"></div>
+
+            <button class="btn" onclick="handlePinChange()" style="margin-top: 1rem;">حفظ التغييرات</button>
+            <button class="btn" onclick="closeModal()" style="background: #666; margin-top: 0.5rem;">إلغاء</button>
         </div>
     </div>
 
     <script>
-        // إعدادات التخزين
-        const STORAGE_KEY = 'salon_auth';
-        let attempts = 0;
+        const STORAGE_KEY = 'salon_admin';
+        let loginAttempts = 0;
         const MAX_ATTEMPTS = 3;
 
-        // تهيئة الكود الافتراضي
-        function initAuth() {
-            if(!localStorage.getItem(STORAGE_KEY)) {
+        // التهيئة الأولية
+        function initAuthSystem() {
+            if (!localStorage.getItem(STORAGE_KEY)) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({
                     pin: '202506',
                     lastChanged: new Date().toISOString()
@@ -161,78 +191,103 @@
             }
         }
 
-        // التحقق من الكود
-        function checkPin() {
-            const enteredPin = Array.from(document.querySelectorAll('.pin-digit'))
-                .map(input => input.value)
-                .join('');
-
-            const authData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            const messageEl = document.getElementById('message');
-
-            if(enteredPin === authData.pin) {
+        // إدارة عملية الدخول
+        function handleLogin() {
+            const enteredPin = getEnteredPin();
+            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            
+            if (enteredPin === savedData.pin) {
                 showMessage('تم المصادقة بنجاح!', 'success');
                 setTimeout(() => window.location.href = 'dashboard.html', 1000);
             } else {
-                attempts++;
-                if(attempts >= MAX_ATTEMPTS) {
-                    showMessage('تم تجاوز الحد الأقصى للمحاولات!', 'error');
-                    disableInputs();
+                loginAttempts++;
+                if (loginAttempts >= MAX_ATTEMPTS) {
+                    showMessage('تم تعطيل النظام مؤقتاً!', 'error');
+                    disableInputs(true);
                 } else {
-                    showMessage(`كود خاطئ! محاولات باقية: ${MAX_ATTEMPTS - attempts}`, 'error');
+                    showMessage(`كود خاطئ! المحاولات المتبقية: ${MAX_ATTEMPTS - loginAttempts}`, 'error');
                 }
             }
         }
 
-        // عرض إعدادات تغيير الكود
-        function showSettings() {
-            const newPin = prompt('أدخل الكود الجديد (6 أرقام):');
-            if(!newPin || newPin.length !== 6 || isNaN(newPin)) {
-                alert('الكود يجب أن يكون 6 أرقام!');
+        // إدارة تغيير الكود
+        function handlePinChange() {
+            const currentPin = getModalPin('current');
+            const newPin = getModalPin('new');
+            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+            if (currentPin !== savedData.pin) {
+                showModalMessage('الكود الحالي غير صحيح!', 'error');
                 return;
             }
 
-            const confirmPin = prompt('أكد الكود الجديد:');
-            if(newPin !== confirmPin) {
-                alert('الكود غير متطابق!');
+            if (!/^\d{6}$/.test(newPin)) {
+                showModalMessage('الكود الجديد يجب أن يكون 6 أرقام!', 'error');
                 return;
             }
 
-            const authData = {
-                pin: newPin,
-                lastChanged: new Date().toISOString()
-            };
+            savedData.pin = newPin;
+            savedData.lastChanged = new Date().toISOString();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedData));
             
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(authData));
-            alert('تم تغيير الكود بنجاح!');
+            showModalMessage('تم تحديث الكود بنجاح!', 'success');
+            setTimeout(closeModal, 1500);
         }
 
         // وظائف مساعدة
-        function showMessage(text, type) {
-            const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-            setTimeout(() => messageEl.className = 'message', 3000);
+        function getEnteredPin() {
+            return Array.from(document.querySelectorAll('.auth-card .pin-input'))
+                .map(input => input.value)
+                .join('');
         }
 
-        function disableInputs() {
-            document.querySelectorAll('.pin-digit').forEach(input => {
-                input.disabled = true;
+        function getModalPin(type) {
+            const prefix = type === 'current' ? 'currentPin' : 'newPin';
+            return Array.from({length: 6}, (_, i) => 
+                document.getElementById(`${prefix}${i}`).value).join('');
+        }
+
+        function showMessage(text, type) {
+            const el = document.getElementById('message');
+            el.textContent = text;
+            el.className = `message ${type}`;
+            setTimeout(() => el.className = 'message', 3000);
+        }
+
+        function showModalMessage(text, type) {
+            const el = document.getElementById('modalMessage');
+            el.textContent = text;
+            el.className = `message ${type}`;
+            setTimeout(() => el.className = 'message', 3000);
+        }
+
+        function disableInputs(disabled) {
+            document.querySelectorAll('.pin-input').forEach(input => {
+                input.disabled = disabled;
             });
         }
 
-        // تهيئة أولية
-        initAuth();
+        function showChangePinModal() {
+            document.getElementById('changePinModal').style.display = 'grid';
+        }
 
-        // إدارة إدخال الأرقام
-        document.querySelectorAll('.pin-digit').forEach(input => {
+        function closeModal() {
+            document.getElementById('changePinModal').style.display = 'none';
+            document.querySelectorAll('.pin-input').forEach(input => input.value = '');
+        }
+
+        // إدارة أحداث الإدخال
+        document.querySelectorAll('.pin-input').forEach(input => {
             input.addEventListener('input', function(e) {
-                const nextIndex = parseInt(this.dataset.index) + 1;
-                if(this.value.length === 1 && nextIndex < 6) {
-                    document.querySelector(`[data-index="${nextIndex}"]`).focus();
+                const next = parseInt(this.dataset.index) + 1;
+                if (this.value.length === 1 && next < 6) {
+                    this.nextElementSibling?.focus();
                 }
             });
         });
+
+        // بدء التشغيل
+        initAuthSystem();
     </script>
 </body>
 </html>
