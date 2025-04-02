@@ -39,14 +39,17 @@
         }
 
         .auth-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 2rem;
             width: 100%;
             max-width: 480px;
             padding: 2rem;
         }
 
         .logo-container {
-            text-align: center;
-            margin-bottom: 2rem;
+            display: grid;
+            place-items: center;
         }
 
         .logo {
@@ -57,10 +60,11 @@
         }
 
         .auth-card {
+            display: grid;
+            gap: 1.5rem;
             background: var(--card-bg);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
         }
@@ -69,7 +73,6 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 0.75rem;
-            margin: 2rem 0;
         }
 
         .pin-input {
@@ -112,7 +115,6 @@
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-color);
-            margin-top: 1rem;
         }
 
         .modal-overlay {
@@ -122,15 +124,17 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.9);
-            display: none;
+            display: grid;
             place-items: center;
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
 
         .change-pin-modal {
+            display: grid;
+            gap: 1.5rem;
             background: var(--card-bg);
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 20px;
             width: 90%;
             max-width: 420px;
@@ -140,21 +144,12 @@
         .message {
             padding: 1rem;
             border-radius: 12px;
-            margin: 1.5rem 0;
-            display: none;
             text-align: center;
             font-family: 'Amiri', serif;
         }
 
-        .success { 
-            background: var(--success-color);
-            display: block !important;
-        }
-
-        .error { 
-            background: var(--error-color);
-            display: block !important;
-        }
+        .success { background: var(--success-color); }
+        .error { background: var(--error-color); }
 
         @media (max-width: 480px) {
             .auth-container {
@@ -179,7 +174,7 @@
         </div>
 
         <div class="auth-card">
-            <h1 style="text-align: center; margin-bottom: 1.5rem;">تسجيل دخول المشرف</h1>
+            <h1 style="text-align: center;">تسجيل دخول المشرف</h1>
             
             <div class="pin-grid">
                 <input type="password" class="pin-input" maxlength="1" data-index="0" autocomplete="off">
@@ -192,15 +187,17 @@
 
             <div class="message" id="message"></div>
             
-            <button class="btn" onclick="handleLogin()">دخول النظام</button>
-            <button class="btn btn-secondary" onclick="showChangePinModal()">تغيير كود الدخول</button>
+            <div class="btn-group" style="display: grid; gap: 0.5rem;">
+                <button class="btn" onclick="handleLogin()">دخول النظام</button>
+                <button class="btn btn-secondary" onclick="showChangePinModal()">تغيير كود الدخول</button>
+            </div>
         </div>
     </div>
 
     <!-- مودال تغيير الكود -->
-    <div class="modal-overlay" id="changePinModal">
+    <div class="modal-overlay" id="changePinModal" style="display: none;">
         <div class="change-pin-modal">
-            <h2 style="text-align: center; margin-bottom: 2rem;">تغيير كود الدخول</h2>
+            <h2 style="text-align: center;">تغيير كود الدخول</h2>
             
             <div class="pin-grid">
                 <input type="password" class="pin-input" id="currentPin0" maxlength="1" autocomplete="off">
@@ -210,9 +207,9 @@
                 <input type="password" class="pin-input" id="currentPin4" maxlength="1" autocomplete="off">
                 <input type="password" class="pin-input" id="currentPin5" maxlength="1" autocomplete="off">
             </div>
-            <small style="display: block; text-align: center; opacity: 0.8;">الكود الحالي</small>
+            <small style="text-align: center; opacity: 0.8;">الكود الحالي</small>
 
-            <div class="pin-grid" style="margin: 2rem 0 1rem;">
+            <div class="pin-grid" style="margin: 1rem 0;">
                 <input type="password" class="pin-input" id="newPin0" maxlength="1" autocomplete="off">
                 <input type="password" class="pin-input" id="newPin1" maxlength="1" autocomplete="off">
                 <input type="password" class="pin-input" id="newPin2" maxlength="1" autocomplete="off">
@@ -220,11 +217,11 @@
                 <input type="password" class="pin-input" id="newPin4" maxlength="1" autocomplete="off">
                 <input type="password" class="pin-input" id="newPin5" maxlength="1" autocomplete="off">
             </div>
-            <small style="display: block; text-align: center; opacity: 0.8;">الكود الجديد</small>
+            <small style="text-align: center; opacity: 0.8;">الكود الجديد</small>
 
             <div class="message" id="modalMessage"></div>
 
-            <div style="display: grid; gap: 0.5rem;">
+            <div class="btn-group" style="display: grid; gap: 0.5rem;">
                 <button class="btn" onclick="handlePinChange()">حفظ التغييرات</button>
                 <button class="btn btn-secondary" onclick="closeModal()">إلغاء العملية</button>
             </div>
@@ -361,11 +358,12 @@
         // إدارة أحداث الإدخال
         document.querySelectorAll('.pin-input').forEach(input => {
             input.addEventListener('input', function(e) {
-                const nextIndex = parseInt(this.dataset?.index || 0) + 1;
-                const container = this.closest('.pin-grid');
+                const currentIndex = parseInt(this.dataset.index || this.id.replace(/\D/g, ''));
+                const nextIndex = currentIndex + 1;
                 
                 if (this.value.length === 1 && nextIndex < 6) {
-                    const nextInput = container.querySelector(`[data-index="${nextIndex}"]`);
+                    const nextInput = document.querySelector(`[data-index="${nextIndex}"]`) || 
+                                     document.getElementById(`${this.id.slice(0, -1)}${nextIndex}`);
                     if (nextInput) nextInput.focus();
                 }
             });
