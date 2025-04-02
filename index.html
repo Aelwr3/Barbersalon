@@ -3,156 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salon Pro - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;700&display=swap" rel="stylesheet">
+    <title>تسجيل الدخول - صالون الحلاقة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #FFD700;
-            --dark: #1A1A1A;
-            --accent: #FFA343;
+            --primary-color: #FFA343;
+            --secondary-color: #2A2A2A;
+            --background-gradient: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #FFFFFF;
+            --error-color: #ff4444;
+            --success-color: #4CAF50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
+            font-family: 'Cairo', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--dark) 0%, #2A2A2A 100%);
-            font-family: 'El Messiri', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* تأثير الجسيمات الخلفية */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+            display: grid;
+            place-items: center;
+            background: var(--background-gradient);
+            color: var(--text-color);
         }
 
         .login-container {
-            position: relative;
-            z-index: 1;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            padding: 3rem;
-            border-radius: 25px;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.1);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: grid;
+            gap: 1.5rem;
+            text-align: center;
         }
 
         .logo {
-            width: 150px;
-            filter: drop-shadow(0 0 10px var(--gold));
-            margin: 0 auto 2rem;
-            display: block;
+            width: 120px;
+            margin: 0 auto;
         }
 
-        .code-input {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin: 2rem 0;
+        .pin-input {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
         }
 
-        .digit-box {
-            width: 50px;
-            height: 50px;
+        .pin-digit {
+            width: 100%;
+            padding: 1rem;
             background: transparent;
-            border: 2px solid var(--gold);
-            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            color: var(--text-color);
             text-align: center;
-            font-size: 1.5rem;
-            color: var(--gold);
-            transition: all 0.3s ease;
+            font-size: 1.2rem;
         }
 
-        .digit-box.filled {
-            background: var(--gold);
-            color: var(--dark);
-            transform: scale(1.1);
-        }
-
-        .submit-btn {
-            background: linear-gradient(45deg, var(--gold), var(--accent));
+        .btn {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: var(--secondary-color);
             border: none;
-            padding: 1rem 3rem;
-            border-radius: 30px;
-            color: var(--dark);
-            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
             transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .error {
+            background: var(--error-color);
             display: block;
-            margin: 2rem auto 0;
-            position: relative;
-            overflow: hidden;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        .success {
+            background: var(--success-color);
+            display: block;
         }
 
-        /* تأثير الإضاءة الذهبية */
-        .glow {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, transparent 70%);
-            pointer-events: none;
+        .settings-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1rem;
+            }
+            
+            .pin-digit {
+                padding: 0.8rem;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="particles"></div>
-    
     <div class="login-container">
-        <img src="logo.png" alt="Salon Logo" class="logo">
-        
-        <div class="code-input">
-            <input type="password" maxlength="1" class="digit-box">
-            <input type="password" maxlength="1" class="digit-box">
-            <input type="password" maxlength="1" class="digit-box">
-            <input type="password" maxlength="1" class="digit-box">
-            <input type="password" maxlength="1" class="digit-box">
-            <input type="password" maxlength="1" class="digit-box">
-        </div>
+        <div class="login-card">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h2>تسجيل دخول المشرف</h2>
+            
+            <div class="pin-input" id="pinContainer">
+                <input type="password" class="pin-digit" maxlength="1" data-index="0">
+                <input type="password" class="pin-digit" maxlength="1" data-index="1">
+                <input type="password" class="pin-digit" maxlength="1" data-index="2">
+                <input type="password" class="pin-digit" maxlength="1" data-index="3">
+                <input type="password" class="pin-digit" maxlength="1" data-index="4">
+                <input type="password" class="pin-digit" maxlength="1" data-index="5">
+            </div>
 
-        <button class="submit-btn">الدخول إلى النظام</button>
+            <div class="message" id="message"></div>
+            
+            <button class="btn" onclick="checkPin()">دخول</button>
+            <a class="settings-link" onclick="showSettings()">تغيير كود الدخول</a>
+        </div>
     </div>
 
     <script>
-        // كود الجسيمات المتحركة
-        function createParticles() {
-            const container = document.querySelector('.particles');
-            for(let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.style.cssText = `
-                    position: absolute;
-                    width: ${Math.random() * 3 + 2}px;
-                    height: ${Math.random() * 3 + 2}px;
-                    background: rgba(255, 215, 0, ${Math.random() * 0.5});
-                    border-radius: 50%;
-                    top: ${Math.random() * 100}%;
-                    left: ${Math.random() * 100}%;
-                    animation: float ${Math.random() * 10 + 5}s infinite;
-                `;
-                container.appendChild(particle);
+        // إعدادات التخزين
+        const STORAGE_KEY = 'salon_auth';
+        let attempts = 0;
+        const MAX_ATTEMPTS = 3;
+
+        // تهيئة الكود الافتراضي
+        function initAuth() {
+            if(!localStorage.getItem(STORAGE_KEY)) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    pin: '202506',
+                    lastChanged: new Date().toISOString()
+                }));
             }
         }
-        createParticles();
 
-        // إدارة إدخال الكود
-        const digitBoxes = document.querySelectorAll('.digit-box');
-        digitBoxes.forEach((box, index) => {
-            box.addEventListener('input', (e) => {
-                if(e.target.value) {
-                    e.target.classList.add('filled');
-                    if(index < digitBoxes.length - 1) {
-                        digitBoxes[index + 1].focus();
-                    }
+        // التحقق من الكود
+        function checkPin() {
+            const enteredPin = Array.from(document.querySelectorAll('.pin-digit'))
+                .map(input => input.value)
+                .join('');
+
+            const authData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            const messageEl = document.getElementById('message');
+
+            if(enteredPin === authData.pin) {
+                showMessage('تم المصادقة بنجاح!', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 1000);
+            } else {
+                attempts++;
+                if(attempts >= MAX_ATTEMPTS) {
+                    showMessage('تم تجاوز الحد الأقصى للمحاولات!', 'error');
+                    disableInputs();
                 } else {
-                    e.target.classList.remove('filled');
+                    showMessage(`كود خاطئ! محاولات باقية: ${MAX_ATTEMPTS - attempts}`, 'error');
+                }
+            }
+        }
+
+        // عرض إعدادات تغيير الكود
+        function showSettings() {
+            const newPin = prompt('أدخل الكود الجديد (6 أرقام):');
+            if(!newPin || newPin.length !== 6 || isNaN(newPin)) {
+                alert('الكود يجب أن يكون 6 أرقام!');
+                return;
+            }
+
+            const confirmPin = prompt('أكد الكود الجديد:');
+            if(newPin !== confirmPin) {
+                alert('الكود غير متطابق!');
+                return;
+            }
+
+            const authData = {
+                pin: newPin,
+                lastChanged: new Date().toISOString()
+            };
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(authData));
+            alert('تم تغيير الكود بنجاح!');
+        }
+
+        // وظائف مساعدة
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            setTimeout(() => messageEl.className = 'message', 3000);
+        }
+
+        function disableInputs() {
+            document.querySelectorAll('.pin-digit').forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        // تهيئة أولية
+        initAuth();
+
+        // إدارة إدخال الأرقام
+        document.querySelectorAll('.pin-digit').forEach(input => {
+            input.addEventListener('input', function(e) {
+                const nextIndex = parseInt(this.dataset.index) + 1;
+                if(this.value.length === 1 && nextIndex < 6) {
+                    document.querySelector(`[data-index="${nextIndex}"]`).focus();
                 }
             });
         });
