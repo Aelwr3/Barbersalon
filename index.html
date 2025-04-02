@@ -26,8 +26,6 @@
         body {
             font-family: 'Cairo', 'Amiri', sans-serif;
             min-height: 100vh;
-            display: grid;
-            place-items: center;
             background: var(--background-gradient);
             color: var(--text-color);
             line-height: 1.6;
@@ -39,17 +37,17 @@
         }
 
         .auth-container {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             width: 100%;
-            max-width: 480px;
             padding: 2rem;
         }
 
         .logo-container {
-            display: grid;
-            place-items: center;
+            margin-bottom: 2rem;
         }
 
         .logo {
@@ -62,6 +60,8 @@
         .auth-card {
             display: grid;
             gap: 1.5rem;
+            width: 100%;
+            max-width: 480px;
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 20px;
@@ -87,6 +87,7 @@
             text-align: center;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
+            caret-color: var(--primary-color);
         }
 
         .pin-input:focus {
@@ -124,13 +125,14 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.9);
-            display: grid;
+            display: none;
             place-items: center;
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
 
         .change-pin-modal {
+            direction: rtl;
             display: grid;
             gap: 1.5rem;
             background: var(--card-bg);
@@ -139,6 +141,9 @@
             width: 90%;
             max-width: 420px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateX(-50%);
+            left: 50%;
+            position: relative;
         }
 
         .message {
@@ -151,6 +156,12 @@
         .success { background: var(--success-color); }
         .error { background: var(--error-color); }
 
+        .btn-group {
+            display: grid !important;
+            gap: 0.75rem !important;
+            margin-top: 1rem;
+        }
+
         @media (max-width: 480px) {
             .auth-container {
                 padding: 1rem;
@@ -161,8 +172,8 @@
             }
 
             .pin-input {
-                font-size: 1.2rem;
-                padding: 0.8rem;
+                font-size: 1.1rem;
+                padding: 0.5rem;
             }
         }
     </style>
@@ -187,7 +198,7 @@
 
             <div class="message" id="message"></div>
             
-            <div class="btn-group" style="display: grid; gap: 0.5rem;">
+            <div class="btn-group">
                 <button class="btn" onclick="handleLogin()">دخول النظام</button>
                 <button class="btn btn-secondary" onclick="showChangePinModal()">تغيير كود الدخول</button>
             </div>
@@ -200,28 +211,28 @@
             <h2 style="text-align: center;">تغيير كود الدخول</h2>
             
             <div class="pin-grid">
-                <input type="password" class="pin-input" id="currentPin0" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="currentPin1" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="currentPin2" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="currentPin3" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="currentPin4" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="currentPin5" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin0" maxlength="1" data-index="0" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin1" maxlength="1" data-index="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin2" maxlength="1" data-index="2" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin3" maxlength="1" data-index="3" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin4" maxlength="1" data-index="4" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin5" maxlength="1" data-index="5" autocomplete="off">
             </div>
             <small style="text-align: center; opacity: 0.8;">الكود الحالي</small>
 
             <div class="pin-grid" style="margin: 1rem 0;">
-                <input type="password" class="pin-input" id="newPin0" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="newPin1" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="newPin2" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="newPin3" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="newPin4" maxlength="1" autocomplete="off">
-                <input type="password" class="pin-input" id="newPin5" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin0" maxlength="1" data-index="0" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin1" maxlength="1" data-index="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin2" maxlength="1" data-index="2" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin3" maxlength="1" data-index="3" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin4" maxlength="1" data-index="4" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin5" maxlength="1" data-index="5" autocomplete="off">
             </div>
             <small style="text-align: center; opacity: 0.8;">الكود الجديد</small>
 
             <div class="message" id="modalMessage"></div>
 
-            <div class="btn-group" style="display: grid; gap: 0.5rem;">
+            <div class="btn-group">
                 <button class="btn" onclick="handlePinChange()">حفظ التغييرات</button>
                 <button class="btn btn-secondary" onclick="closeModal()">إلغاء العملية</button>
             </div>
@@ -233,7 +244,6 @@
         let loginAttempts = 0;
         const MAX_ATTEMPTS = 3;
 
-        // التهيئة الأولية
         function initAuthSystem() {
             if (!localStorage.getItem(STORAGE_KEY)) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -243,7 +253,6 @@
             }
         }
 
-        // إدارة عملية الدخول
         function handleLogin() {
             const enteredPin = getEnteredPin();
             const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -256,7 +265,6 @@
             }
         }
 
-        // التعامل مع المحاولات الفاشلة
         function handleFailedAttempt() {
             loginAttempts++;
             
@@ -274,7 +282,6 @@
             }
         }
 
-        // إدارة تغيير الكود
         function handlePinChange() {
             const currentPin = getModalPin('current');
             const newPin = getModalPin('new');
@@ -293,7 +300,6 @@
             updatePin(newPin);
         }
 
-        // وظائف مساعدة
         function getEnteredPin() {
             return Array.from(document.querySelectorAll('.auth-card .pin-input'))
                 .map(input => input.value)
@@ -355,22 +361,39 @@
             clearInputs();
         }
 
-        // إدارة أحداث الإدخال
-        document.querySelectorAll('.pin-input').forEach(input => {
-            input.addEventListener('input', function(e) {
-                const currentIndex = parseInt(this.dataset.index || this.id.replace(/\D/g, ''));
-                const nextIndex = currentIndex + 1;
-                
-                if (this.value.length === 1 && nextIndex < 6) {
-                    const nextInput = document.querySelector(`[data-index="${nextIndex}"]`) || 
-                                     document.getElementById(`${this.id.slice(0, -1)}${nextIndex}`);
-                    if (nextInput) nextInput.focus();
-                }
-            });
-        });
+        function handleInputNavigation(e) {
+            const input = e.target;
+            const currentIndex = parseInt(input.dataset.index);
+            const inputs = Array.from(document.querySelectorAll('.pin-input')).filter(i => i.closest('.change-pin-modal') === input.closest('.change-pin-modal'));
 
-        // بدء التشغيل
-        initAuthSystem();
+            if (e.inputType === 'deleteContentBackward' && currentIndex > 0) {
+                inputs[currentIndex - 1].focus();
+                return;
+            }
+
+            if (input.value.length === 1 && currentIndex < 5) {
+                inputs[currentIndex + 1].focus();
+            }
+        }
+
+        function initInputEvents() {
+            document.querySelectorAll('.pin-input').forEach(input => {
+                input.addEventListener('input', handleInputNavigation);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !input.value) {
+                        handleInputNavigation({...e, inputType: 'deleteContentBackward'});
+                    }
+                });
+            });
+        }
+
+        function init() {
+            initAuthSystem();
+            initInputEvents();
+            document.querySelector('.pin-input').focus();
+        }
+
+        init();
     </script>
 </body>
 </html>
