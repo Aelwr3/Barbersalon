@@ -99,6 +99,27 @@
             border-radius: 12px;
             height: 400px;
         }
+
+        /* النماذج المنبثقة */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            place-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
     </style>
 </head>
 <body>
@@ -106,16 +127,22 @@
         <!-- القائمة الجانبية -->
         <nav class="sidebar">
             <h2 style="font-family: 'Amiri'; padding: 1rem;">إدارة الصالون</h2>
-            <a href="#customers">العملاء</a>
-            <a href="#bookings">الحجوزات</a>
-            <a href="#services">الخدمات</a>
-            <a href="#invoices">الفواتير</a>
-            <a href="#settings">الإعدادات</a>
-            <a href="#logout">تسجيل الخروج</a>
+            <a href="customers-list.html">العملاء</a>
+            <a href="bookings.html">الحجوزات</a>
+            <a href="services.html">الخدمات</a>
+            <a href="invoices.html">الفواتير</a>
+            <a href="settings.html">الإعدادات</a>
+            <a href="#" onclick="handleLogout()">تسجيل الخروج</a>
         </nav>
 
         <!-- المحتوى الرئيسي -->
         <main class="main-content">
+            <!-- الإجراءات السريعة -->
+            <div class="quick-actions">
+                <button class="btn" onclick="showAddModal('customer')">إضافة عميل</button>
+                <button class="btn" onclick="showAddModal('booking')">حجز جديد</button>
+            </div>
+
             <!-- بطاقات الإحصائيات -->
             <div class="stats-grid">
                 <div class="stat-card" id="totalCustomers">
@@ -141,11 +168,11 @@
                             <th>العميل</th>
                             <th>الخدمة</th>
                             <th>الوقت</th>
-                            <th>الحالة</th>
+                            <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- تظهر البيانات هنا -->
+                        <!-- البيانات تُضاف ديناميكيًا -->
                     </tbody>
                 </table>
             </div>
@@ -157,51 +184,109 @@
         </main>
     </div>
 
-    <script>
-        // دالة التهيئة
-        function initDashboard() {
-            // جمع البيانات من localStorage
-            const customers = JSON.parse(localStorage.getItem('customers')) || [];
-            const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-            const services = JSON.parse(localStorage.getItem('services')) || [];
-            const invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+    <!-- نموذج إضافة عميل -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-content">
+            <h2>إضافة عميل جديد</h2>
+            <form id="customerForm" onsubmit="saveCustomer(event)">
+                <input type="text" placeholder="اسم العميل" required>
+                <input type="tel" placeholder="رقم الهاتف" required>
+                <div class="form-actions">
+                    <button type="submit">حفظ</button>
+                    <button type="button" onclick="closeModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            // تحديث الإحصائيات
+    <script>
+        // بيانات أولية
+        const initData = () => ({
+            customers: JSON.parse(localStorage.getItem('customers')) || [],
+            bookings: JSON.parse(localStorage.getItem('bookings')) || [],
+            invoices: JSON.parse(localStorage.getItem('invoices')) || []
+        });
+
+        // تحديث لوحة المعلومات
+        const updateDashboard = () => {
+            const { customers, bookings, invoices } = initData();
+            
+            // الإحصائيات
             document.getElementById('totalCustomers').querySelector('p').textContent = customers.length;
             document.getElementById('activeBookings').querySelector('p').textContent = bookings.length;
-            
-            // حساب الإيرادات
-            const totalRevenue = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
-            document.getElementById('totalRevenue').querySelector('p').textContent = `${totalRevenue} درهم`;
+            document.getElementById('totalRevenue').querySelector('p').textContent = 
+                invoices.reduce((sum, inv) => sum + inv.total, 0).toLocaleString() + ' درهم';
 
-            // ملء الجدول الزمني
+            // الجدول الزمني
             const tbody = document.querySelector('#scheduleTable tbody');
             tbody.innerHTML = bookings.map(booking => `
                 <tr>
                     <td>${booking.customerName}</td>
                     <td>${booking.service}</td>
-                    <td>${new Date(booking.date).toLocaleDateString()}</td>
-                    <td>${booking.status}</td>
+                    <td>${new Date(booking.date).toLocaleDateString('ar-EG')}</td>
+                    <td>
+                        <button onclick="editBooking('${booking.id}')">تعديل</button>
+                        <button onclick="deleteBooking('${booking.id}')">حذف</button>
+                    </td>
                 </tr>
             `).join('');
 
-            // تهيئة الرسم البياني
+            // الرسم البياني
             const ctx = document.getElementById('revenueChart').getContext('2d');
             new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: invoices.map(inv => inv.date),
+                    labels: invoices.map(inv => new Date(inv.date).toLocaleDateString('ar-EG')),
                     datasets: [{
                         label: 'الإيرادات اليومية',
                         data: invoices.map(inv => inv.total),
-                        backgroundColor: '#FFA343'
+                        borderColor: '#FFA343'
                     }]
                 }
             });
-        }
+        };
+
+        // إدارة النماذج المنبثقة
+        const showAddModal = (type) => {
+            document.getElementById('customerModal').style.display = 'grid';
+        };
+
+        const closeModal = () => {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        };
+
+        // حفظ العميل
+        const saveCustomer = (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const newCustomer = {
+                id: Date.now(),
+                name: formData.get('name'),
+                phone: formData.get('phone')
+            };
+            
+            const data = initData();
+            data.customers.push(newCustomer);
+            localStorage.setItem('customers', JSON.stringify(data.customers));
+            updateDashboard();
+            closeModal();
+        };
+
+        // تسجيل الخروج
+        const handleLogout = () => {
+            localStorage.removeItem('authToken');
+            window.location.href = 'login.html';
+        };
 
         // التحميل الأولي
-        window.addEventListener('DOMContentLoaded', initDashboard);
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('authToken')) {
+                window.location.href = 'login.html';
+            }
+            updateDashboard();
+        });
     </script>
 </body>
 </html>
