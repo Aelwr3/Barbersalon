@@ -14,6 +14,7 @@
             --text-color: #FFFFFF;
             --error-color: #ff4444;
             --success-color: #4CAF50;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -29,65 +30,96 @@
             place-items: center;
             background: var(--background-gradient);
             color: var(--text-color);
+            line-height: 1.6;
         }
 
-        .login-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
+        .auth-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 480px;
             padding: 2rem;
         }
 
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
         .logo {
-            width: 150px;
-            margin: 0 auto;
-            filter: drop-shadow(0 0 10px rgba(255, 163, 67, 0.5));
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 16px rgba(255, 163, 67, 0.4));
         }
 
         .auth-card {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            display: grid;
-            gap: 1.5rem;
-            text-align: center;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            transform: translateY(0);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
         }
 
         .pin-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 0.5rem;
-            margin: 1rem 0;
+            gap: 0.75rem;
+            margin: 2rem 0;
         }
 
         .pin-input {
             width: 100%;
+            aspect-ratio: 1;
             padding: 1rem;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.08);
             border: 2px solid var(--primary-color);
-            border-radius: 8px;
+            border-radius: 12px;
             color: var(--text-color);
+            font-size: 1.4rem;
             text-align: center;
-            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .pin-input:focus {
+            outline: none;
+            box-shadow: 0 0 12px rgba(255, 163, 67, 0.3);
+            background: rgba(255, 163, 67, 0.05);
         }
 
         .btn {
-            padding: 1rem;
+            width: 100%;
+            padding: 1.2rem;
             background: var(--primary-color);
             color: var(--secondary-color);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
             opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 163, 67, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            margin-top: 1rem;
         }
 
         .modal-overlay {
@@ -96,83 +128,129 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             place-items: center;
             z-index: 1000;
+            backdrop-filter: blur(8px);
         }
 
         .change-pin-modal {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 15px;
+            padding: 2.5rem;
+            border-radius: 20px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalEntry 0.4s ease;
         }
 
         .message {
             padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
+            border-radius: 12px;
+            margin: 1.5rem 0;
             display: none;
+            animation: fadeIn 0.3s ease;
         }
 
-        .success { background: var(--success-color); display: block; }
-        .error { background: var(--error-color); display: block; }
+        .success { background: var(--success-color); }
+        .error { background: var(--error-color); }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalEntry {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1rem;
+            }
+
+            .auth-card {
+                padding: 1.5rem;
+            }
+
+            .pin-input {
+                font-size: 1.2rem;
+                padding: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/10033/10033281.png" class="logo" alt="صالون الحلاقة">
-        
+    <div class="auth-container">
+        <div class="logo-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/10033/10033281.png" class="logo" alt="صالون الحلاقة">
+        </div>
+
         <div class="auth-card">
-            <h2>تسجيل دخول المشرف</h2>
+            <h1 style="text-align: center; margin-bottom: 1.5rem;">تسجيل دخول المشرف</h1>
             
             <div class="pin-grid">
-                <input type="password" class="pin-input" maxlength="1" data-index="0">
-                <input type="password" class="pin-input" maxlength="1" data-index="1">
-                <input type="password" class="pin-input" maxlength="1" data-index="2">
-                <input type="password" class="pin-input" maxlength="1" data-index="3">
-                <input type="password" class="pin-input" maxlength="1" data-index="4">
-                <input type="password" class="pin-input" maxlength="1" data-index="5">
+                <input type="password" class="pin-input" maxlength="1" data-index="0" autocomplete="off">
+                <input type="password" class="pin-input" maxlength="1" data-index="1" autocomplete="off">
+                <input type="password" class="pin-input" maxlength="1" data-index="2" autocomplete="off">
+                <input type="password" class="pin-input" maxlength="1" data-index="3" autocomplete="off">
+                <input type="password" class="pin-input" maxlength="1" data-index="4" autocomplete="off">
+                <input type="password" class="pin-input" maxlength="1" data-index="5" autocomplete="off">
             </div>
 
             <div class="message" id="message"></div>
             
-            <button class="btn" onclick="handleLogin()">دخول</button>
-            <button class="btn" onclick="showChangePinModal()" style="margin-top: 1rem;">تغيير الكود</button>
+            <button class="btn" onclick="handleLogin()">
+                <span>دخول النظام</span>
+            </button>
+            <button class="btn btn-secondary" onclick="showChangePinModal()">
+                <span>تغيير كود الدخول</span>
+            </button>
         </div>
     </div>
 
     <!-- مودال تغيير الكود -->
     <div class="modal-overlay" id="changePinModal">
         <div class="change-pin-modal">
-            <h2>تغيير كود الدخول</h2>
+            <h2 style="text-align: center; margin-bottom: 2rem;">تغيير كود الدخول</h2>
             
             <div class="pin-grid">
-                <input type="password" class="pin-input" id="currentPin0" maxlength="1">
-                <input type="password" class="pin-input" id="currentPin1" maxlength="1">
-                <input type="password" class="pin-input" id="currentPin2" maxlength="1">
-                <input type="password" class="pin-input" id="currentPin3" maxlength="1">
-                <input type="password" class="pin-input" id="currentPin4" maxlength="1">
-                <input type="password" class="pin-input" id="currentPin5" maxlength="1">
+                <input type="password" class="pin-input" id="currentPin0" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin1" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin2" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin3" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin4" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="currentPin5" maxlength="1" autocomplete="off">
             </div>
-            <small>الكود الحالي</small>
+            <small style="display: block; text-align: center; opacity: 0.8;">الكود الحالي</small>
 
-            <div class="pin-grid" style="margin-top: 1rem;">
-                <input type="password" class="pin-input" id="newPin0" maxlength="1">
-                <input type="password" class="pin-input" id="newPin1" maxlength="1">
-                <input type="password" class="pin-input" id="newPin2" maxlength="1">
-                <input type="password" class="pin-input" id="newPin3" maxlength="1">
-                <input type="password" class="pin-input" id="newPin4" maxlength="1">
-                <input type="password" class="pin-input" id="newPin5" maxlength="1">
+            <div class="pin-grid" style="margin: 2rem 0 1rem;">
+                <input type="password" class="pin-input" id="newPin0" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin1" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin2" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin3" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin4" maxlength="1" autocomplete="off">
+                <input type="password" class="pin-input" id="newPin5" maxlength="1" autocomplete="off">
             </div>
-            <small>الكود الجديد</small>
+            <small style="display: block; text-align: center; opacity: 0.8;">الكود الجديد</small>
 
             <div class="message" id="modalMessage"></div>
 
-            <button class="btn" onclick="handlePinChange()" style="margin-top: 1rem;">حفظ التغييرات</button>
-            <button class="btn" onclick="closeModal()" style="background: #666; margin-top: 0.5rem;">إلغاء</button>
+            <div style="display: grid; gap: 0.5rem;">
+                <button class="btn" onclick="handlePinChange()">
+                    <span>حفظ التغييرات</span>
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal()">
+                    <span>إلغاء العملية</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -200,13 +278,25 @@
                 showMessage('تم المصادقة بنجاح!', 'success');
                 setTimeout(() => window.location.href = 'dashboard.html', 1000);
             } else {
-                loginAttempts++;
-                if (loginAttempts >= MAX_ATTEMPTS) {
-                    showMessage('تم تعطيل النظام مؤقتاً!', 'error');
-                    disableInputs(true);
-                } else {
-                    showMessage(`كود خاطئ! المحاولات المتبقية: ${MAX_ATTEMPTS - loginAttempts}`, 'error');
-                }
+                handleFailedAttempt();
+            }
+        }
+
+        // التعامل مع المحاولات الفاشلة
+        function handleFailedAttempt() {
+            loginAttempts++;
+            
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                showMessage('تم تعطيل النظام مؤقتاً!', 'error');
+                disableInputs(true);
+                setTimeout(() => {
+                    loginAttempts = 0;
+                    disableInputs(false);
+                    showMessage('تم إعادة تفعيل النظام', 'success');
+                }, 30000);
+            } else {
+                showMessage(`كود خاطئ! المحاولات المتبقية: ${MAX_ATTEMPTS - loginAttempts}`, 'error');
+                clearInputs();
             }
         }
 
@@ -222,16 +312,11 @@
             }
 
             if (!/^\d{6}$/.test(newPin)) {
-                showModalMessage('الكود الجديد يجب أن يكون 6 أرقام!', 'error');
+                showModalMessage('يجب أن يتكون الكود من 6 أرقام!', 'error');
                 return;
             }
 
-            savedData.pin = newPin;
-            savedData.lastChanged = new Date().toISOString();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedData));
-            
-            showModalMessage('تم تحديث الكود بنجاح!', 'success');
-            setTimeout(closeModal, 1500);
+            updatePin(newPin);
         }
 
         // وظائف مساعدة
@@ -245,6 +330,19 @@
             const prefix = type === 'current' ? 'currentPin' : 'newPin';
             return Array.from({length: 6}, (_, i) => 
                 document.getElementById(`${prefix}${i}`).value).join('');
+        }
+
+        function updatePin(newPin) {
+            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            savedData.pin = newPin;
+            savedData.lastChanged = new Date().toISOString();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedData));
+            
+            showModalMessage('تم تحديث الكود بنجاح!', 'success');
+            setTimeout(() => {
+                closeModal();
+                window.location.reload();
+            }, 1500);
         }
 
         function showMessage(text, type) {
@@ -264,24 +362,33 @@
         function disableInputs(disabled) {
             document.querySelectorAll('.pin-input').forEach(input => {
                 input.disabled = disabled;
+                input.style.opacity = disabled ? 0.5 : 1;
             });
+        }
+
+        function clearInputs() {
+            document.querySelectorAll('.pin-input').forEach(input => input.value = '');
+            document.querySelector('.pin-input').focus();
         }
 
         function showChangePinModal() {
             document.getElementById('changePinModal').style.display = 'grid';
+            document.getElementById('currentPin0').focus();
         }
 
         function closeModal() {
             document.getElementById('changePinModal').style.display = 'none';
-            document.querySelectorAll('.pin-input').forEach(input => input.value = '');
+            clearInputs();
         }
 
         // إدارة أحداث الإدخال
         document.querySelectorAll('.pin-input').forEach(input => {
             input.addEventListener('input', function(e) {
-                const next = parseInt(this.dataset.index) + 1;
-                if (this.value.length === 1 && next < 6) {
-                    this.nextElementSibling?.focus();
+                const nextIndex = parseInt(this.dataset.index) + 1;
+                const container = this.closest('.pin-grid');
+                
+                if (this.value.length === 1 && nextIndex < 6) {
+                    container.querySelector(`[data-index="${nextIndex}"]`).focus();
                 }
             });
         });
